@@ -80,19 +80,21 @@ def loss_fn(weights, inputs, outputs):
 ## Training loop
 ##
 for i in range(epochs):
-    ## Forward pass (calculate output)
+    ## Forward pass (calculate loss)
     model_output = loss_fn(weights, inputs, outputs)
 
     ## Backward pass (calculate gradients)
     model_output.backward()
 
-    ## Update the weights using the gradients to minimize the loss
+    ## Using the output gradients, we can adjust the weights to minimize the loss
     with torch.no_grad():
         weights -= lr * weights.grad
 
+    ##
     ## Zero the gradients after updating the weights
-    ## This is because the gradients are accumulated
-    ## and we don't want to double count them.
+    ##  This is because the gradients are accumulated and we don't
+    ##  want to double count them.
+    ##
     weights.grad.zero_()
 
     ##
