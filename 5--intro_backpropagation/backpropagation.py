@@ -33,19 +33,6 @@ inputs = torch.tensor([1, 2, 3, 4], dtype=torch.int64, device=device)
 ##
 outputs = torch.tensor([5, 6, 7, 8], dtype=torch.int64, device=device)
 
-
-##
-## Loss function -- This is the function that we want to minimize
-## We want to minimize the loss function to make our model more accurate.
-##
-def loss_fn(weights, inputs, outputs):
-    return ((weights * inputs - outputs) ** 2).sum()
-
-    ##
-    ## End of loss_fn
-    ##
-
-
 ##
 ## The learning rate is a hyperparameter that controls how much
 ## we adjust the weights of our model with respect the loss gradient.
@@ -57,6 +44,38 @@ lr: float = 0.01
 ##
 epochs: int = 1000
 
+
+##
+## Loss function -- This is the function that we want to minimize
+## We want to minimize the loss function to make our model more accurate.
+##
+def loss_fn(weights, inputs, outputs):
+    ##
+    ## Absolute function -- Custom
+    ##
+    def square(x):
+        return x * x
+
+    ##
+    ## Make a prediction. This works by using the adjusted
+    ## weights against the inputs.
+    ##
+    prediction = weights * inputs
+
+    ##
+    ## Calculate the loss. This calculates the positive difference
+    ## between the prediction and the actual value.
+    ##
+    ## Since we need a scalar value for the backward function
+    ## to work, we will take the average (mean) of the differences.
+    ##
+    return square(prediction - outputs).mean()
+
+    ##
+    ## End of loss_fn
+    ##
+
+
 ##
 ## Training loop
 ##
@@ -67,11 +86,13 @@ for i in range(epochs):
     ## Backward pass (calculate gradients)
     model_output.backward()
 
-    ## Update the weights
+    ## Update the weights using the gradients to minimize the loss
     with torch.no_grad():
         weights -= lr * weights.grad
 
-    ## Zero the gradients
+    ## Zero the gradients after updating the weights
+    ## This is because the gradients are accumulated
+    ## and we don't want to double count them.
     weights.grad.zero_()
 
     ##

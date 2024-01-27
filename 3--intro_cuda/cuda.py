@@ -14,7 +14,7 @@ if torch.cuda.is_available():
     print("There is a GPU")
 
     ##
-    ## Create a tensor -- This is a type of matrix.
+    ## Create a tensor -- Sort of a type of matrix -- and send it to the gpu
     ##
     a = torch.ones(1, 5, device=device)  # rows, columns
 
@@ -23,18 +23,15 @@ if torch.cuda.is_available():
     ## We use cuda to speed up the process of training a neural network
     ##
     ## We can convert a tensor to a numpy array
-    ## But we must first convert the tensor to the cpu since numpy doesn't
-    ## support cuda and the gpu!
+    ##  But we must first convert the tensor to the cpu since numpy doesn't
+    ##  support cuda and the gpu!
     ##
     b = a.to("cpu").numpy()  # We must first convert the tensor to the cpu
     # b = a.cpu().numpy()  # An alternative method
     print(b)
 
     ##
-    ## If we want to optimize the speed of our neural network, we can also
-    ## make it require a gradient.
-    ##
     ## Gradients -- The slope of a function at a given point -- are used to
-    ## optimize neural networks and models.
+    ## optimize neural networks and models accuracy.
     ##
     x = torch.ones(5, 5, device=device, requires_grad=True)
