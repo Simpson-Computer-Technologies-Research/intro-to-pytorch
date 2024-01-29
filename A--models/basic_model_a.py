@@ -11,22 +11,27 @@
 import torch
 
 ##
+## GPU -- CUDA
+##
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+##
 ## Create a tensor to store the weights.
 ## Weights are the parameters that we want to learn.
 ##
-weights = torch.ones(4, requires_grad=True)
+weights = torch.ones(4, requires_grad=True, device=device)
 
 ##
 ## Create a tensor to store the inputs.
 ## Inputs are the data that we want to train on.
 ##
-inputs = torch.tensor([1, 2, 3, 4], dtype=torch.int64)
+inputs = torch.tensor([1, 2, 3, 4], dtype=torch.int64, device=device)
 
 ##
 ## Create a tensor to store the outputs.
 ## Outputs are the data that we want to predict.
 ##
-outputs = torch.tensor([5, 6, 7, 8], dtype=torch.int64)
+outputs = torch.tensor([5, 6, 7, 8], dtype=torch.int64, device=device)
 
 ##
 ## The learning rate is a hyperparameter that controls how much
@@ -79,9 +84,6 @@ for i in range(epochs):
     model_output = loss_fn(weights, inputs, outputs)
 
     ## Backward pass (calculate gradients)
-    ##
-    ## The Backpropagation
-    ##
     model_output.backward()
 
     ## Using the output gradients, we can adjust the weights to minimize the loss
@@ -113,6 +115,17 @@ print(f"Actual: {outputs.data.numpy()}")
 ## We can see that the predictions are very close to the actual values.
 ## This is because we adjusted the weights continuously to minimize the loss
 ## function. This incremently made the model more accurate.
+##
+
+##
+## Test the model
+##
+inputs = torch.tensor([0.99, 2.012, 2.97, 4.01], dtype=torch.float16, device=device)
+print(f"Predictions: {(weights * inputs).data.numpy()}")
+
+##
+## Not nearly as accurate as the training data. (obviously)
+## But it is still pretty close.
 ##
 
 ##
